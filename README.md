@@ -27,13 +27,26 @@ Each time you open the menu, KeepWork reads the current state from `pmset -g`. T
 - **Server mode also applies on battery.** Switch back to normal mode before you put the Mac in a bag. Otherwise it keeps running, drains the battery, and heats up.
 - With the lid closed the Mac cools less well. Keep it on a hard, open surface.
 
-## Requirements
+## Install
 
-- macOS 13 or later
-- Apple Silicon (the build script targets `arm64`)
-- Xcode or the Xcode Command Line Tools (for `swiftc`)
+1. Download `KeepWork-x.y.z.dmg` from [Releases](https://github.com/ponzS/keepwork-macos/releases/latest).
+2. Open the DMG and drag `KeepWork.app` into the `Applications` folder.
+3. Open KeepWork from `Applications`.
 
-## Build
+KeepWork is not signed with an Apple Developer ID or notarized, so macOS blocks it on first launch. To allow it, choose one:
+
+- Open System Settings → Privacy & Security, scroll down, and click **Open Anyway** next to the KeepWork message.
+- Or run this in Terminal:
+
+  ```bash
+  xattr -dr com.apple.quarantine /Applications/KeepWork.app
+  ```
+
+Requires macOS 13 or later. Works on both Apple Silicon and Intel Macs.
+
+## Build from source
+
+Requires Xcode or the Xcode Command Line Tools (for `swiftc`).
 
 ```bash
 git clone https://github.com/ponzS/keepwork-macos.git
@@ -44,7 +57,7 @@ open build/KeepWork.app
 
 The app is written to `build/KeepWork.app`. You can move it to `/Applications`.
 
-The app is ad-hoc signed, not notarized. If macOS blocks it on first launch, right-click the app and choose Open.
+To build the DMG, run `./package.sh`. It writes `build/KeepWork-<version>.dmg`, using the version in `Info.plist`.
 
 ## Launch at login
 
@@ -55,7 +68,8 @@ Open System Settings → General → Login Items and add `KeepWork.app`.
 ```
 Sources/main.swift   All app code
 Info.plist           App metadata (menu bar only, no Dock icon)
-build.sh             Build script
+build.sh             Builds the app (universal: arm64 + x86_64)
+package.sh           Builds the app and packages it into a DMG
 ```
 
 ## License
